@@ -80,3 +80,23 @@ test("chained commands are inspected individually", () => {
 	assert.ok(detectFileMutation("true; git commit -m x"));
 	assert.equal(detectFileMutation("ls && cd src && grep x ."), undefined);
 });
+
+test("a /tmp path inside the worktree is not a safe redirect target", () => {
+	const cwd = "/tmp/project";
+	assert.ok(
+		detectFileMutation("echo x > /tmp/project/src/a.js", { cwd }),
+		"writing inside the project must be blocked even though the path starts with /tmp",
+	);
+	assert.ok(detectFileMutation("echo x > /tmp/project/b.txt", { cwd }));
+	assert.ok(detectFileMutation("echo x > /tmp/project", { cwd }), "the project root itself is protected");
+	assert.equal(
+		detectFileMutation("echo x > /tmp/scratch/a.txt", { cwd }),
+		undefined,
+		"a sibling temp dir outside the worktree stays allowed",
+	);
+	assert.equal(
+		detectFileMutation("echo x > /tmp/projectx/a.txt", { cwd }),
+		undefined,
+		"prefix sibling must not be mistaken for the worktree",
+	);
+});

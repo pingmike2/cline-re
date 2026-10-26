@@ -156,7 +156,9 @@ beam                        → reflection/beam-free
   file mutators (47), git writers (22), package writers (17), and write
   subcommands (23). Covers redirection (`>`, `>>`), in-place edits (`sed -i`,
   `tee`), destructive finds (`-delete`), `git commit`, package installs, and
-  so on. Writes are only permitted into `/tmp` and `/dev/null`.
+  so on. Writes are only permitted into `/tmp` and `/dev/null` — except under
+  the worktree itself, which stays read-only even when the project happens to
+  live under `/tmp`.
 - **Loop guardrail** — the same tool with the same input triggers a warning on
   the 3rd occurrence and a hard stop on the 5th.
 - **Mistake guardrail** — N consecutive tool failures abort the run.

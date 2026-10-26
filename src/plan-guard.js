@@ -61,11 +61,11 @@ const WRITE_SUBCOMMANDS = {
 	winget: WINGET_WRITERS, nuget: NUGET_WRITERS,
 };
 
-function isAllowedRedirectTarget(target) {
+function isAllowedRedirectTarget(target, cwd) {
 	const t = target.replace(/["']/g, "");
 	if (/^(\/dev\/(null|stdout|stderr|tty)|nul:?)$/i.test(t)) return true;
 	if (t.includes("..")) return false;
-	return (
+	const tempish = (
 		t.startsWith("/tmp/") ||
 		t.startsWith("/var/tmp/") ||
 		t.startsWith("$TMPDIR") ||
@@ -73,6 +73,15 @@ function isAllowedRedirectTarget(target) {
 		/^%te?mp%/i.test(t) ||
 		/^\$env:te?mp/i.test(t)
 	);
+	if (!tempish) return false;
+	// A temp prefix alone is not enough: when the project itself lives under
+	// /tmp, every path inside the worktree would look "safe". Reject any target
+	// that resolves inside cwd so plan mode stays read-only for the project.
+	if (cwd && t.startsWith("/")) {
+		const root = cwd.endsWith("/") ? cwd : `${cwd}/`;
+		if (t === cwd || t.startsWith(root)) return false;
+	}
+	return true;
 }
 
 function commandBasename(token) {
@@ -197,13 +206,14 @@ function isWriteCommand(argv) {
 	return undefined;
 }
 
-export function detectFileMutation(command) {
+export function detectFileMutation(command, options = {}) {
+	const cwd = options.cwd;
 	if (typeof command !== "string") {
 		return isWriteCommand([command.command, ...(command.args ?? [])]);
 	}
 	const cleaned = stripHeredocs(command);
 	for (const m of cleaned.matchAll(/(?:^|[^<>])(?:>{1,2}|&>{1,2})\s*([^\s;&|<>()]+)/g)) {
-		if (!isAllowedRedirectTarget(m[1])) return `output redirection (\`> ${m[1]}\`)`;
+		if (!isAllowedRedirectTarget(m[1], cwd)) return `output redirection (\`> ${m[1]}\`)`;
 	}
 	for (const segment of cleaned.split(/[\n;|&()`]+/)) {
 		const argv = segment.trim().split(/\s+/).filter(Boolean);

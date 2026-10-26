@@ -32,7 +32,7 @@ export async function runCommandsTool(input, { cwd = process.cwd(), mode = "act"
 
 	if (mode === "plan") {
 		for (const cmd of commands) {
-			const reason = detectFileMutation(cmd);
+			const reason = detectFileMutation(cmd, { cwd });
 			if (reason) return { blocked: true, reason, message: planModeBlockMessage(reason) };
 		}
 	}
