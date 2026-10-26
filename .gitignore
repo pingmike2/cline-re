@@ -1,0 +1,11 @@
+node_modules/
+credentials.json
+*.creds
+session.json
+sessions/
+checkpoints/
+.cline-re/
+*.log
+.DS_Store
+coverage/
+.nyc_output/
