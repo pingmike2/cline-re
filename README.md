@@ -4,10 +4,14 @@ A clean-room reimplementation of the [Cline](https://cline.bot) CLI agent
 (v3.0.74), built by reverse-engineering the published npm artifacts and the
 open-source `cline/cline` repository.
 
+See [NOTES.md](NOTES.md) for the reverse-engineering log: how the binary was
+ruled out, the two protocol details that are easy to get wrong, the plan-mode
+bug found during testing, and what a real-repo audit got right and wrong.
+
 No Cline code is vendored. The binary is never patched or decrypted — every
 protocol constant below was derived from observable behaviour (HTTP traffic,
 TypeScript declaration files, and the open-source app shell), then re-expressed
-in ~2.6k lines of dependency-free ESM.
+in ~1.9k lines of dependency-free ESM.
 
 ```
 $ cline-re -m solar-mini4 "read app.js — is add() correct?"
