@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "description": "Reimplementation of the Cline CLI agent loop: 5-tool surface, plan-mode command guard, loop/mistake guardrails, OpenAI-compatible streaming client.",
-  "bin": { "cline-re": "./src/cli.js" },
+  "bin": { "cline": "./src/cli.js", "cline-re": "./src/cli.js" },
   "scripts": {
     "start": "node src/cli.js",
     "test": "node --test 'test/*.test.js'"

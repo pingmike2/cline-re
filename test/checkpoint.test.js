@@ -15,6 +15,7 @@ async function repo() {
 	await git(dir, "init", "-q");
 	await git(dir, "config", "user.email", "t@t.t");
 	await git(dir, "config", "user.name", "t");
+	await fs.writeFile(path.join(dir, ".gitattributes"), "* text=auto eol=lf\n");
 	await fs.writeFile(path.join(dir, "a.txt"), "v1\n");
 	await git(dir, "add", ".");
 	await git(dir, "commit", "-qm", "init");
