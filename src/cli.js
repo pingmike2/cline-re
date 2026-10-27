@@ -100,7 +100,7 @@ async function main() {
 		return 0;
 	}
 	if (opts.command === "models") {
-		const res = await fetch(`${CLINE_API_BASE}/ai/cline/recommended-models`, { headers: clineHeaders() });
+		const res = await fetch(`${CLINE_API_BASE}/ai/cline/recommended-models`, { headers: clineGatewayHeaders() });
 		const body = await res.json();
 		for (const group of ["free", "clineCloud", "clinePass", "recommended"]) {
 			if (!Array.isArray(body[group])) continue;
