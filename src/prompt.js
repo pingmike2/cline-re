@@ -19,6 +19,7 @@ export function platformName(platform = process.platform) {
 export function buildPromptVars({ cwd, platform = process.platform, ide = "cli", date = new Date(), rules = "", metadata = "" } = {}) {
 	return {
 		PLATFORM_NAME: platformName(platform),
+		SHELL_NAME: platform === "win32" ? "powershell.exe" : "/bin/bash",
 		CURRENT_DATE: date.toISOString().slice(0, 10),
 		IDE_NAME: ide,
 		CWD: cwd ?? process.cwd(),

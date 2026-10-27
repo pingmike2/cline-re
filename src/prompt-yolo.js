@@ -23,6 +23,7 @@ Environment you are running in:
 2. Date: {{CURRENT_DATE}}
 3. IDE: {{IDE_NAME}}
 4. Working Directory: {{CWD}}
+5. Shell used by run_commands: {{SHELL_NAME}}
 </env>
 {{CLINE_RULES}}
 {{CLINE_METADATA}}`;
