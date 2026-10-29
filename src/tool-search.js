@@ -20,7 +20,7 @@ function runRipgrep(pattern, cwd, timeoutMs) {
 		const args = ["--line-number", "--no-heading", "--color", "never", "--max-count", String(MAX_MATCHES_PER_FILE)];
 		for (const d of SKIP_DIRS) args.push("--glob", `!${d}/**`);
 		args.push("--", pattern, ".");
-		const child = spawn("rg", args, { cwd });
+		const child = spawn("rg", args, { cwd, env: { ...process.env, LC_ALL: "C" } });
 		let out = "";
 		let err = "";
 		let spawnError;
@@ -77,7 +77,7 @@ async function searchWithoutRipgrep(pattern, cwd) {
 				continue;
 			}
 			if (!entry.isFile()) continue;
-			await scanFile(path.join(dir, entry.name), relPath, re, hits);
+			await scanFile(path.join(dir, entry.name), `./${relPath}`, re, hits);
 		}
 	}
 	const output = hits.join("\n");
