@@ -22,7 +22,7 @@ test("search finds matches with file and line numbers", async () => {
 	const [res] = results;
 	assert.equal(res.error, undefined);
 	assert.equal(res.match_count, 1);
-	assert.match(res.output, /^src\/math\.js:1:/m);
+	assert.match(res.output, /^(?:\.\/)?src\/math\.js:1:/m);
 });
 
 test("search skips ignored directories", async () => {
