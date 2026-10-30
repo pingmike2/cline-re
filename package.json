@@ -1,12 +1,34 @@
 {
-  "name": "cline-re",
-  "version": "0.1.0",
-  "private": true,
-  "type": "module",
-  "description": "Reimplementation of the Cline CLI agent loop: 5-tool surface, plan-mode command guard, loop/mistake guardrails, OpenAI-compatible streaming client.",
-  "bin": { "cline": "./src/cli.js", "cline-re": "./src/cli.js" },
-  "scripts": {
-    "start": "node src/cli.js",
-    "test": "node --test 'test/*.test.js'"
-  }
+	"name": "cline-re",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"description": "Reimplementation of the Cline CLI agent loop: 5-tool surface, plan-mode command guard, loop/mistake guardrails, OpenAI-compatible streaming client.",
+	"bin": {
+		"cline": "./src/cli.js",
+		"cline-re": "./src/cli.js"
+	},
+	"scripts": {
+		"start": "node src/cli.js",
+		"test": "node --test 'test/*.test.js' 'dsh/test/*.test.js'",
+		"test:dsh": "node --test 'dsh/test/*.test.js'"
+	},
+	"license": "MIT",
+	"author": "pingmike2 (https://github.com/pingmike2)",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/pingmike2/cline-re.git"
+	},
+	"homepage": "https://github.com/pingmike2/cline-re#readme",
+	"bugs": {
+		"url": "https://github.com/pingmike2/cline-re/issues"
+	},
+	"keywords": [
+		"cline",
+		"agent",
+		"cli",
+		"llm",
+		"deepseek-harness",
+		"dsh"
+	]
 }

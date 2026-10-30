@@ -47,8 +47,9 @@ export class OpenAIClient {
 		return h;
 	}
 
-	async chat({ messages, tools, temperature, signal, timeoutMs = 300000 }) {
+	async chat({ messages, tools, temperature, signal, timeoutMs = 300000, maxTokens, onText, onReasoning }) {
 		const body = { model: this.model, messages, stream: true };
+		if (maxTokens != null) body.max_tokens = maxTokens;
 		if (tools?.length) {
 			body.tools = tools.map((t) => ({
 				type: "function",
@@ -61,7 +62,7 @@ export class OpenAIClient {
 		let attempt = 0;
 		for (;;) {
 			try {
-				return await this.streamOnce(body, { signal, timeoutMs });
+				return await this.streamOnce(body, { signal, timeoutMs, onText, onReasoning });
 			} catch (err) {
 				const retryable = err instanceof ProviderError && err.retryable;
 				if (!retryable || attempt >= this.maxRetries) throw err;
@@ -71,7 +72,7 @@ export class OpenAIClient {
 		}
 	}
 
-	async streamOnce(body, { signal, timeoutMs }) {
+	async streamOnce(body, { signal, timeoutMs, onText, onReasoning }) {
 		const timeout = AbortSignal.timeout(timeoutMs);
 		const composite = signal ? AbortSignal.any([timeout, signal]) : timeout;
 		let res;
@@ -94,10 +95,10 @@ export class OpenAIClient {
 			if (clineErr) throw clineErr;
 			throw new ProviderError(message, { status: res.status });
 		}
-		return this.collect(await res.body, composite);
+		return this.collect(await res.body, composite, { onText, onReasoning });
 	}
 
-	async collect(body, signal) {
+	async collect(body, signal, hooks = {}) {
 		const reader = body.getReader();
 		const decoder = new TextDecoder();
 		let buffer = "";
@@ -122,7 +123,7 @@ export class OpenAIClient {
 					if (!payload || payload === "[DONE]") continue;
 					let json;
 					try { json = JSON.parse(payload); } catch { continue; }
-					consumeChunk(json, { toolCalls, usage, onText: (t) => { text += t; }, onReasoning: (t) => { reasoning += t; }, setFinish: (f) => { finishReason = f; } });
+					consumeChunk(json, { toolCalls, usage, onText: (t) => { text += t; hooks.onText?.(t); }, onReasoning: (t) => { reasoning += t; hooks.onReasoning?.(t); }, setFinish: (f) => { finishReason = f; } });
 				}
 			}
 		} finally {

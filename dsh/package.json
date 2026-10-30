@@ -1,0 +1,71 @@
+{
+	"name": "dsh-cline",
+	"version": "0.1.0",
+	"description": "Use Cline (cline-re) inside DeepSeek Harness: a Cline model provider and a `cline` delegation tool",
+	"type": "module",
+	"main": "lib/index.js",
+	"exports": {
+		".": "./lib/index.js",
+		"./client": "./lib/client.js",
+		"./package.json": "./package.json"
+	},
+	"files": [
+		"lib/",
+		"cordis.patch.yml",
+		"README.md"
+	],
+	"engines": {
+		"node": ">=20"
+	},
+	"scripts": {
+		"test": "node --test \"test/*.test.js\""
+	},
+	"dependencies": {
+		"@deepseek-ai/schemastery": "^3.18.4"
+	},
+	"peerDependencies": {
+		"@deepseek-ai/cordis": "*",
+		"@deepseek-ai/dsh-client-ui-plugin-manager": "*",
+		"@deepseek-ai/dsh-client-ui-renderer": "*",
+		"react": "*"
+	},
+	"peerDependenciesMeta": {
+		"@deepseek-ai/cordis": {
+			"optional": true
+		},
+		"@deepseek-ai/dsh-client-ui-plugin-manager": {
+			"optional": true
+		},
+		"@deepseek-ai/dsh-client-ui-renderer": {
+			"optional": true
+		},
+		"react": {
+			"optional": true
+		}
+	},
+	"dsh": {
+		"bundle": {
+			"patch": "./cordis.patch.yml"
+		},
+		"client": {
+			"platform": "web",
+			"inject": [
+				"@deepseek-ai/dsh-client-ui-renderer",
+				"@deepseek-ai/dsh-client-ui-plugin-manager"
+			]
+		},
+		"engines": {
+			"dsh": ">=0.1.7-rc.1"
+		}
+	},
+	"license": "MIT",
+	"author": "pingmike2 (https://github.com/pingmike2)",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/pingmike2/cline-re.git"
+	},
+	"homepage": "https://github.com/pingmike2/cline-re#readme",
+	"bugs": {
+		"url": "https://github.com/pingmike2/cline-re/issues"
+	}
+}

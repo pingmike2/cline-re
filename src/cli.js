@@ -4,17 +4,10 @@ import { createAgent, CLINE_API_BASE, clineGatewayHeaders } from "./index.js";
 import { loadSession, listSessions } from "./session.js";
 import { loginAndReport, credentialsPath } from "./login.js";
 import { CredentialStore } from "./credentials.js";
-
-const FREE_MODELS = {
-	"solar-mini4": "cline-free/solar-mini4",
-	"nemotron": "cline-free/nemotron-3.5-super-vl",
-	"lightning": "nvidia/nemotron-3.5-lightning-free",
-	"laguna": "poolside/laguna-s-2.1-free",
-	"beam": "reflection/beam-free",
-};
+import { resolveModelAlias, DEFAULT_MODEL } from "./models.js";
 
 function parseArgs(argv) {
-	const opts = { mode: "act", model: "cline-free/solar-mini4", baseURL: CLINE_API_BASE, json: false, cwd: process.cwd() };
+	const opts = { mode: "act", model: DEFAULT_MODEL, baseURL: CLINE_API_BASE, json: false, cwd: process.cwd() };
 	const rest = [];
 	for (let i = 0; i < argv.length; i += 1) {
 		const a = argv[i];
@@ -116,7 +109,7 @@ async function main() {
 	}
 	if (!opts.prompt) { console.error("error: missing prompt\n\n" + HELP); return 2; }
 
-	const model = FREE_MODELS[opts.model] ?? opts.model;
+	const model = resolveModelAlias(opts.model);
 	let apiKey = opts.apiKey ?? process.env.CLINE_API_KEY;
 	if (!apiKey && opts.baseURL === CLINE_API_BASE) {
 		try {

@@ -1,0 +1,15 @@
+# dsh-cline bundle: mounts one host row that registers the `cline` model provider
+# and the `cline` delegation tool. Copy of the config lives in the profile's
+# cordis.patch.yml; secrets belong in <DSH_HOME>/cline.json, not here.
+- insert:
+    - id: dsh-cline
+      name: dsh-cline
+      config:
+        # Optional key slot. Leave empty and put the key in <DSH_HOME>/cline.json
+        # (recommended) or export CLINE_API_KEY; `cline-re login` also works.
+        apiKey: ""
+        baseURL: https://api.cline.bot/api/v1
+        model: cline-free/nemotron-3.5-super-vl
+        defaultCwd: ""
+        enableProvider: true
+        enableTool: true
