@@ -1,4 +1,4 @@
-import { CLINE_API_BASE } from "./auth.js";
+import { CLINE_API_BASE, WORKOS_BASE, WORKOS_CLIENT_ID } from "./auth.js";
 import { clineHeaders } from "./index.js";
 
 export class FreeLimitError extends Error {
@@ -43,15 +43,45 @@ export async function exchangeAccessToken(accessToken, { apiBase = CLINE_API_BAS
 	return body;
 }
 
-export async function refreshClineToken(refreshToken, { apiBase = CLINE_API_BASE, fetchImpl = fetch } = {}) {
-	const res = await fetchImpl(`${apiBase}/auth/refresh`, {
+export function decodeJwtClaims(token) {
+	try {
+		const parts = String(token).split(".");
+		if (parts.length !== 3) return undefined;
+		return JSON.parse(Buffer.from(parts[1], "base64url").toString("utf8"));
+	} catch {
+		return undefined;
+	}
+}
+
+export function describeJwt(token) {
+	const claims = decodeJwtClaims(token);
+	if (!claims) return {};
+	return {
+		expiresAt: typeof claims.exp === "number" ? new Date(claims.exp * 1000).toISOString() : undefined,
+		userInfo: { email: claims.email, id: claims.sub, firstName: claims.firstName },
+	};
+}
+
+export async function refreshClineToken(refreshToken, { workosBase = WORKOS_BASE, clientId = WORKOS_CLIENT_ID, fetchImpl = fetch } = {}) {
+	const res = await fetchImpl(`${workosBase}/user_management/authenticate`, {
 		method: "POST",
-		headers: { "Content-Type": "application/json", ...clineHeaders() },
-		body: JSON.stringify({ refreshToken, grantType: "refresh_token" }),
+		headers: { "Content-Type": "application/x-www-form-urlencoded" },
+		body: new URLSearchParams({
+			grant_type: "refresh_token",
+			refresh_token: refreshToken,
+			client_id: clientId,
+		}),
 	});
 	const body = await res.json().catch(() => ({}));
-	if (!res.ok || !body?.data?.accessToken) {
-		throw new Error(`Token refresh failed (${res.status}): ${body?.error ?? "no accessToken"}`);
+	if (!res.ok || !body?.access_token) {
+		throw new Error(`Token refresh failed (${res.status}): ${body?.error_description ?? body?.error ?? "no access_token"}`);
 	}
-	return body.data;
+	const jwt = describeJwt(body.access_token);
+	return {
+		accessToken: body.access_token,
+		refreshToken: body.refresh_token ?? refreshToken,
+		tokenType: body.token_type ?? "Bearer",
+		expiresAt: jwt.expiresAt,
+		userInfo: jwt.userInfo,
+	};
 }
