@@ -51,7 +51,12 @@ Any of these also work, in this order:
 With none of them, the provider/tool reports `MISSING_CREDENTIAL` and names the
 file to create.
 
+```sh
+# macOS / Linux / Git Bash
+printf '{"apiKey":"your Cline API key"}' > ~/.dsh/cline.json
+```
 ```powershell
+# Windows PowerShell
 '{"apiKey":"your Cline API key"}' | Set-Content -Encoding utf8 "$env:DSH_HOME\cline.json"
 ```
 
@@ -59,21 +64,33 @@ Keys are never logged or echoed in errors; nothing under `lib/` prints them.
 
 ### Install (local link, same pattern as dsh-telegram-control)
 
+Works the same on Windows, macOS and Linux. The installer edits the profile
+manifest, creates the plugin link and registers the bundle row:
+
+```sh
+node dsh/install.mjs              # or ./dsh/install.sh on macOS/Linux,
+                                  #    dsh\install.cmd or pwsh -File dsh\install.ps1 on Windows
+node dsh/install.mjs --dry-run    # show the plan, write nothing
+node dsh/install.mjs --remove     # unlink and unregister
+node dsh/install.mjs --profile work   # profile other than "desktop"
+```
+
+`DSH_HOME` overrides the data root (default `~/.dsh` on every platform);
+`DSH_PROFILE` sets the default profile name.
+
+What it does, if you prefer to do it by hand:
+
 1. add the dependency to the profile's `package.json`:
 
    ```json
-   "dsh-cline": "link:F:/cline-re/dsh"
+   "dsh-cline": "link:/absolute/path/to/cline-re/dsh"
    ```
 
 2. append `dsh-cline` to `dsh.profile.bundles`;
-3. install the link in the profile directory (`%DSH_HOME%\profiles\desktop`):
-
-   ```powershell
-   node "C:\Users\admin\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\pnpm\bin\pnpm.mjs" install
-   ```
-
-   (`dsh/install.ps1` does 1–2 and creates the junction; `-Remove` rolls back.)
-4. restart DSH (`%DSH_HOME%\restart-dsh.ps1`).
+3. link it into `<DSH_HOME>/profiles/<profile>/node_modules/dsh-cline`
+   (a junction on Windows, a symlink elsewhere). The installer does this;
+   DSH's own `pnpm install` in the profile directory also works;
+4. restart DSH.
 
 After the restart the Plugins page shows `dsh-cline`; clicking it opens Configure.
 
@@ -106,11 +123,15 @@ After the restart the Plugins page shows `dsh-cline`; clicking it opens Configur
 
 ### Tests
 
-```powershell
-cd F:\cline-re\dsh
-node --test "test/*.test.js"   # 19 offline tests (provider/tool/plugin/client/settings)
-cd F:\cline-re
-node --test "test/*.test.js" "dsh/test/*.test.js"   # 109 (90 core + 19 plugin)
+```sh
+cd dsh
+node --test "test/*.test.js"   # 25 offline tests (provider/tool/plugin/client/settings/install)
+
+# One test file needs @deepseek-ai/schemastery:
+npm install --no-save @deepseek-ai/schemastery
+
+cd ..
+node --test "test/*.test.js" "dsh/test/*.test.js"   # 93 core + 25 plugin
 ```
 
 ---
@@ -159,7 +180,12 @@ node --test "test/*.test.js" "dsh/test/*.test.js"   # 109 (90 core + 19 plugin)
 
 四者都没有时，工具/供应商会报 `MISSING_CREDENTIAL`，并直接告诉你该写哪个文件。
 
+```sh
+# macOS / Linux / Git Bash
+printf '{"apiKey":"你的 Cline API key"}' > ~/.dsh/cline.json
+```
 ```powershell
+# Windows PowerShell
 '{"apiKey":"你的 Cline API key"}' | Set-Content -Encoding utf8 "$env:DSH_HOME\cline.json"
 ```
 
@@ -168,22 +194,34 @@ node --test "test/*.test.js" "dsh/test/*.test.js"   # 109 (90 core + 19 plugin)
 
 ### 安装（本地 link，和 dsh-telegram-control 同一套路）
 
+Windows、macOS、Linux 用同一条命令。安装器负责改 profile 清单、建插件链接、
+登记 bundle 行：
+
+```sh
+node dsh/install.mjs              # macOS/Linux 也可以 ./dsh/install.sh
+                                  # Windows 也可以 dsh\install.cmd 或 pwsh -File dsh\install.ps1
+node dsh/install.mjs --dry-run    # 只打印计划，不写盘
+node dsh/install.mjs --remove     # 卸载并注销
+node dsh/install.mjs --profile work   # 装到 desktop 以外的 profile
+```
+
+`DSH_HOME` 覆盖数据根目录（各平台默认都是 `~/.dsh`），`DSH_PROFILE` 指定默认
+profile 名。
+
+想手动做的话，等价于：
+
 1. 在 profile 的 `package.json` 里加依赖：
 
    ```json
-   "dsh-cline": "link:F:/cline-re/dsh"
+   "dsh-cline": "link:/绝对路径/cline-re/dsh"
    ```
 
 2. 把 `dsh-cline` 加进 `dsh.profile.bundles` 数组（放在 `dsh-free-search` 之类的
    第三方插件旁边）。
-3. 在 profile 目录（`%DSH_HOME%\profiles\desktop`）里装链接：
-
-   ```powershell
-   node "C:\Users\admin\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\pnpm\bin\pnpm.mjs" install
-   ```
-
-   （`dsh/install.ps1` 会做 1、2 并建目录 junction，`-Remove` 可回滚。）
-4. 重启 DSH（`%DSH_HOME%\restart-dsh.ps1`，或退出后重新打开）。
+3. 链接到 `<DSH_HOME>/profiles/<profile>/node_modules/dsh-cline`（Windows 上是
+   junction，其他平台是符号链接）。安装器会做这一步；在 profile 目录里跑 DSH
+   自带的 `pnpm install` 也可以。
+4. 重启 DSH。
 
 重启后在 Plugins 页能看到 `dsh-cline` 行，点进去就是 Configure 表单。
 
@@ -211,9 +249,13 @@ node --test "test/*.test.js" "dsh/test/*.test.js"   # 109 (90 core + 19 plugin)
 
 ### 测试
 
-```powershell
-cd F:\cline-re\dsh
-node --test "test/*.test.js"   # 19 个离线测试（provider/tool/plugin/client/settings）
-cd F:\cline-re
-node --test "test/*.test.js" "dsh/test/*.test.js"   # 109 个（仓库原有 90 + 插件 19）
+```sh
+cd dsh
+node --test "test/*.test.js"   # 25 个离线测试（provider/tool/plugin/client/settings/install）
+
+# 有一个测试文件需要 @deepseek-ai/schemastery：
+npm install --no-save @deepseek-ai/schemastery
+
+cd ..
+node --test "test/*.test.js" "dsh/test/*.test.js"   # 核心 93 + 插件 25
 ```

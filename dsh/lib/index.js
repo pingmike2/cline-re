@@ -1,9 +1,31 @@
-import z from "@deepseek-ai/schemastery";
+import { createRequire } from "node:module";
+import path from "node:path";
 import { clineHeaders } from "../../src/index.js";
 import { DEFAULT_MODEL } from "../../src/models.js";
 import { createClineAdapter } from "./provider.js";
 import { createClineTool } from "./tool.js";
-import { createKeyResolver, missingCredentialError, normalizeConfig, PLUGIN_NAME } from "./settings.js";
+import {
+	createKeyResolver,
+	missingCredentialError,
+	normalizeConfig,
+	PLUGIN_NAME,
+	resolveDshDependency,
+} from "./settings.js";
+
+// DSH ships @deepseek-ai/schemastery next to its own runtime, not inside each
+// profile, so fall back to resolving it through the DSH install. Without this the
+// plugin only loads in profiles that happen to have schemastery hoisted into them.
+function loadSchema() {
+	try {
+		return createRequire(import.meta.url)("@deepseek-ai/schemastery");
+	} catch (err) {
+		const resolved = resolveDshDependency("@deepseek-ai/schemastery");
+		if (!resolved) throw err;
+		return createRequire(path.join(path.dirname(resolved), "noop.js"))(resolved);
+	}
+}
+
+const z = loadSchema();
 
 export const name = PLUGIN_NAME;
 export const inject = ["tools", "llm"];
