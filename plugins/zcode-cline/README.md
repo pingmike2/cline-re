@@ -33,8 +33,18 @@ process it ever launches is `node src/cli.js` of this repository.
 
 ## CLI resolution and credentials
 
-- CLI entry: `ZCODE_CLINE_CLI` env var, defaulting to `F:\cline-re\src\cli.js`
-  (this checkout). Override it if the repo moves.
+Cross-platform: the three entry points work identically on Windows, macOS and
+Linux. The CLI is resolved in this order, so nothing is hard-coded to one
+machine:
+
+1. `ZCODE_CLINE_CLI` env var → a `src/cli.js` path of any cline-re checkout;
+2. `cline-re` on `PATH` (run `npm link` once inside the checkout; on a machine
+   without write access to the global prefix, use a user-level one:
+   `npm config set prefix ~/.local && npm link`, with `~/.local/bin` on `PATH`);
+3. `./src/cli.js` when the current workspace is the cline-re checkout itself.
+
+If none resolve, the entry point asks the user to `npm link` or set
+`ZCODE_CLINE_CLI`.
 - API key, in order: `CLINE_API_KEY` env var, then credentials stored by
   `cline-re login` (`~/.cline-re/credentials.json`). A credential failure
   (exit code 2) is surfaced to the user, never retried.

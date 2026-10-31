@@ -25,9 +25,10 @@ approve each step in this session.
 
 ## How to invoke
 
-1. CLI path: `$ZCODE_CLINE_CLI` if set, else `F:\cline-re\src\cli.js`. If
-   missing, ask the user to point `ZCODE_CLINE_CLI` at their checkout's
-   `src/cli.js`.
+1. CLI entry, in order (Windows, macOS and Linux all work): `$ZCODE_CLINE_CLI`
+   if set; `cline-re` on `PATH` (after `npm link` in the checkout);
+   `./src/cli.js` when the workspace is the cline-re checkout itself. If none
+   resolve, ask the user to `npm link` their checkout or set `ZCODE_CLINE_CLI`.
 2. Useful flags (from `cline --help`):
    - `-m <model|alias>` — `nemotron` (default), `solar-mini4`, `lightning`, `beam`.
    - `-p` plan mode (read-only), `-y` yolo/headless.
@@ -39,7 +40,8 @@ approve each step in this session.
 3. Run it with the Bash tool, quoting the whole prompt as one argument:
 
    ```bash
-   node "<cli-path>" -c "<workspace-root>" -m nemotron "<complete task>"
+   cline-re -c "<workspace-root>" -m nemotron "<complete task>"   # PATH entry
+   node "<path-to>/src/cli.js" -c "<workspace-root>" ...          # file entry
    ```
 
 4. Credentials: the CLI uses `CLINE_API_KEY`, or the stored credentials from a

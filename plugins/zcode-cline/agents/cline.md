@@ -14,18 +14,22 @@ the task yourself — the cline agent does, in its own loop with its own tools.
 
 ## Procedure
 
-1. CLI path: use the `ZCODE_CLINE_CLI` environment variable if set, otherwise
-   `F:\cline-re\src\cli.js`. If that file does not exist, report the missing
-   path and stop.
+1. CLI entry, in order: the `ZCODE_CLINE_CLI` environment variable if set;
+   `cline-re` on `PATH` (after `npm link` in the checkout); `./src/cli.js` when
+   the current workspace is the cline-re checkout itself. If none resolve,
+   report that the user must `npm link` their checkout or set `ZCODE_CLINE_CLI`,
+   and stop.
 2. Pick the working directory: the workspace root the task refers to (default:
    current working directory). Pass it with `-c`.
 3. Pick the model: `nemotron` by default; `solar-mini4`, `lightning`, `beam`
    are also valid. Pass with `-m`. Prefer `-p` (plan mode) if the task is
    explicitly read-only analysis.
-4. Run (quote the task as one argument; use forward slashes under Git Bash):
+4. Run (quote the task as one argument; forward slashes work on every platform
+   under the Bash tool):
 
    ```bash
-   node "<cli-path>" -c "<cwd>" -m <model> "<task>"
+   cline-re -c "<cwd>" -m <model> "<task>"          # PATH entry
+   node "<path-to>/src/cli.js" -c "<cwd>" ...       # file entry
    ```
 
 5. Exit code 2 with a credential message (for example `run \`cline-re login\``)
