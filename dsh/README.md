@@ -25,7 +25,7 @@ translation layer, which is what makes the plugin auditable.
 1. **Model provider** — `cline` shows up in DSH's provider/model lists, so DSH's
    own agent loop can run Cline's free models (default
    `cline-free/nemotron-3.5-super-vl`, alias `nemotron`; also `solar-mini4`,
-   `lightning`, `laguna`, `beam`).
+   `lightning`, `beam` — all free-pool models share a 200k context window).
 2. **Delegation tool** — a model can call `cline` to hand a self-contained task
    to the cline-re agent, which brings its own read_files / editor / run_commands
    / search_codebase tools, plan/yolo modes, loop and mistake guardrails.
@@ -155,7 +155,7 @@ node --test "test/*.test.js" "dsh/test/*.test.js"   # 93 core + 25 plugin
 
 1. **模型供应商**：`cline` 出现在 DSH 的供应商/模型列表里，DSH 自己的 agent 循环
    直接走 Cline 免费模型（默认 `cline-free/nemotron-3.5-super-vl`，别名
-   `nemotron`；还有 `solar-mini4`、`lightning`、`laguna`、`beam`）。
+   `nemotron`；还有 `solar-mini4`、`lightning`、`beam`，全部 200k 上下文）。
 2. **委派工具**：模型可以调用 `cline` 工具，把一段自包含任务交给 cline-re 自己的
    agent（它有自己的 read_files / editor / run_commands / search_codebase、
    plan/yolo 模式、循环与错误护栏）。

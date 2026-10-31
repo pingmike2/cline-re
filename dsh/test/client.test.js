@@ -100,6 +100,43 @@ test("the configure page renders a key field and saves settings operations", asy
 	assert.ok(flat.some((node) => node.type === "input" && node.props.type === "checkbox"));
 });
 
+test("model input offers the live free-pool models as a datalist", () => {
+	const client = loadClient();
+	const { registrations } = registerRow(client);
+	const form = {
+		state: {
+			status: "ready",
+			writable: true,
+			revision: 7,
+			value: { model: "cline-free/nemotron-3.5-super-vl", enableTool: true },
+		},
+		mutate: async () => true,
+	};
+	const page = registrations[0].component({ view: "page", form });
+	const flat = [];
+	const walk = (node) => {
+		if (node === null || node === undefined || typeof node === "string") return;
+		if (Array.isArray(node)) return node.forEach(walk);
+		flat.push(node);
+		(node.children ?? []).forEach(walk);
+	};
+	walk(page);
+	const modelInput = flat.find((node) => node.type === "input" && node.props.value === "cline-free/nemotron-3.5-super-vl");
+	assert.ok(modelInput, "model input present");
+	assert.equal(modelInput.props.list, "dsh-cline-model-choices");
+	const datalist = flat.find((node) => node.type === "datalist");
+	assert.ok(datalist, "datalist present");
+	const options = datalist.children.flat();
+	const ids = options.map((node) => node.props.value);
+	assert.deepEqual(ids, [
+		"cline-free/nemotron-3.5-super-vl",
+		"nvidia/nemotron-3.5-lightning-free",
+		"reflection/beam-free",
+		"cline-free/solar-mini4",
+	]);
+	assert.equal(options.every((node) => node.props.label.includes("200k")), true);
+});
+
 test("page falls back to a hint when the host exposes no writable form", () => {
 	const client = loadClient();
 	const { registrations } = registerRow(client);

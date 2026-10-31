@@ -14,6 +14,13 @@ window.__ModuleLoader__.load({
 		const INPUT = { width: "100%", padding: "6px 8px", fontSize: "13px", boxSizing: "border-box" };
 		const NOTE = { fontSize: "12px", color: "var(--dsh-text-secondary, #888)", margin: "0 0 12px" };
 		const FIELD = { marginBottom: "12px" };
+		const MODEL_LIST_ID = "dsh-cline-model-choices";
+		const FREE_MODEL_CHOICES = [
+			{ id: "cline-free/nemotron-3.5-super-vl", label: "Nemotron 3.5 Super VL · 120B · 200k 上下文（默认）" },
+			{ id: "nvidia/nemotron-3.5-lightning-free", label: "Nemotron 3.5 Lightning · 200k 上下文" },
+			{ id: "reflection/beam-free", label: "Beam · 200k 上下文" },
+			{ id: "cline-free/solar-mini4", label: "Solar Mini 4 · 35B MoE · 200k 上下文" },
+		];
 
 		function read(value, secrets) {
 			const raw = value ?? {};
@@ -127,7 +134,7 @@ window.__ModuleLoader__.load({
 						placeholder: draft.hasKey ? "已保存，留空则不变" : "sk_...",
 						onChange: (event) => edit({ apiKey: event.target.value }),
 					})),
-				row("模型", textInput(draft.model, (model) => edit({ model }), { placeholder: "cline-free/nemotron-3.5-super-vl" })),
+				row("模型（免费池）", textInput(draft.model, (model) => edit({ model }), { placeholder: "cline-free/nemotron-3.5-super-vl", list: MODEL_LIST_ID })),
 				row("网关地址", textInput(draft.baseURL, (baseURL) => edit({ baseURL }), { placeholder: "https://api.cline.bot/api/v1" })),
 				row("默认工作目录（可空）", textInput(draft.defaultCwd, (defaultCwd) => edit({ defaultCwd }), { placeholder: "cline 工具执行任务的目录" })),
 				row("最大迭代数（可空）", textInput(draft.maxIterations, (maxIterations) => edit({ maxIterations: maxIterations.replace(/[^0-9]/g, "") }), { inputMode: "numeric" })),
@@ -136,7 +143,9 @@ window.__ModuleLoader__.load({
 				h("div", { style: { display: "flex", gap: "8px", marginTop: "12px" } },
 					h("button", { type: "submit", disabled: busy || !editor.dirty }, busy ? "保存中…" : "保存"),
 					h("button", { type: "button", onClick: editor.reset, disabled: busy }, "重置")),
-				editor.message ? h("p", { role: "status", style: NOTE }, editor.message) : null);
+				editor.message ? h("p", { role: "status", style: NOTE }, editor.message) : null,
+				h("datalist", { id: MODEL_LIST_ID },
+					FREE_MODEL_CHOICES.map((choice) => h("option", { key: choice.id, value: choice.id, label: choice.label }))));
 		}
 
 		exports.apply = function apply(ctx) {

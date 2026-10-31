@@ -21,7 +21,7 @@ export function createClineTool({ config, resolveKey, env = process.env }) {
 				prompt: { type: "string", description: "The complete task for the Cline agent." },
 				cwd: { type: "string", description: "Working directory for the Cline agent; defaults to the plugin's defaultCwd or the process directory." },
 				mode: { type: "string", enum: ["act", "plan", "yolo"], description: "act (default) edits files, plan is read-only, yolo runs headless." },
-				model: { type: "string", description: "Cline model id or alias (nemotron is the default; solar-mini4, lightning, laguna, beam also work)." },
+				model: { type: "string", description: "Cline model id or alias (nemotron is the default; solar-mini4, lightning, beam also work)." },
 				maxIterations: { type: "integer", description: "Hard cap on Cline agent iterations." },
 			},
 		},

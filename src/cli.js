@@ -57,7 +57,7 @@ Options:
   -y, --yolo                 Background/headless mode
   --json                     Emit events as JSON lines
   -c, --cwd <path>           Working directory
-  -m, --model <id>           Model id (or alias: solar-mini4|nemotron|lightning|laguna|beam)
+  -m, --model <id>           Model id (or alias: solar-mini4|nemotron|lightning|beam)
   -k, --key <api-key>        API key (or CLINE_API_KEY)
   --base-url <url>           OpenAI-compatible base URL
   --retries <n>              Max consecutive mistakes (default 6)

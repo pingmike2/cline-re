@@ -147,7 +147,6 @@ Free models reachable through the API:
 solar-mini4                 → cline-free/solar-mini4
 nemotron                    → cline-free/nemotron-3.5-super-vl
 lightning                   → nvidia/nemotron-3.5-lightning-free
-laguna                      → poolside/laguna-s-2.1-free
 beam                        → reflection/beam-free
 ```
 
@@ -451,7 +450,6 @@ API 可达的免费模型：
 solar-mini4                 → cline-free/solar-mini4
 nemotron                    → cline-free/nemotron-3.5-super-vl
 lightning                   → nvidia/nemotron-3.5-lightning-free
-laguna                      → poolside/laguna-s-2.1-free
 beam                        → reflection/beam-free
 ```
 
