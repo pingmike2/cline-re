@@ -16,10 +16,10 @@ window.__ModuleLoader__.load({
 		const FIELD = { marginBottom: "12px" };
 		const MODEL_LIST_ID = "dsh-cline-model-choices";
 		const FREE_MODEL_CHOICES = [
-			{ id: "cline-free/nemotron-3.5-super-vl", label: "Nemotron 3.5 Super VL · 120B · 200k 上下文（默认）" },
-			{ id: "nvidia/nemotron-3.5-lightning-free", label: "Nemotron 3.5 Lightning · 200k 上下文" },
-			{ id: "reflection/beam-free", label: "Beam · 200k 上下文" },
-			{ id: "cline-free/solar-mini4", label: "Solar Mini 4 · 35B MoE · 200k 上下文" },
+			{ id: "cline-free/nemotron-3.5-super-vl", label: "Nemotron 3.5 Super VL · 120B · 1M 上下文（默认）" },
+			{ id: "nvidia/nemotron-3.5-lightning-free", label: "Nemotron 3.5 Lightning · 1M 上下文" },
+			{ id: "reflection/beam-free", label: "Beam · 1M 上下文" },
+			{ id: "cline-free/solar-mini4", label: "Solar Mini 4 · 35B MoE · 512k 上下文" },
 		];
 
 		function read(value, secrets) {

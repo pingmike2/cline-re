@@ -8,10 +8,10 @@ export const FREE_MODELS = {
 };
 
 export const CLINE_MODEL_CATALOG = [
-	{ id: "cline-free/nemotron-3.5-super-vl", name: "Cline Free: Nemotron 3.5 Super VL (120B)", contextWindow: 200000, maxTokens: 32768 },
-	{ id: "nvidia/nemotron-3.5-lightning-free", name: "Cline Free: Nemotron 3.5 Lightning", contextWindow: 200000, maxTokens: 32768 },
-	{ id: "reflection/beam-free", name: "Cline Free: Beam", contextWindow: 200000, maxTokens: 32768 },
-	{ id: "cline-free/solar-mini4", name: "Cline Free: Solar Mini 4 (35B MoE)", contextWindow: 200000, maxTokens: 32768 },
+	{ id: "cline-free/nemotron-3.5-super-vl", name: "Cline Free: Nemotron 3.5 Super VL (120B, 1M)", contextWindow: 1048576, maxTokens: 131072 },
+	{ id: "nvidia/nemotron-3.5-lightning-free", name: "Cline Free: Nemotron 3.5 Lightning (1M)", contextWindow: 1000000, maxTokens: 65536 },
+	{ id: "reflection/beam-free", name: "Cline Free: Beam (1M)", contextWindow: 1048576, maxTokens: 131072 },
+	{ id: "cline-free/solar-mini4", name: "Cline Free: Solar Mini 4 (35B MoE, 512k)", contextWindow: 524288, maxTokens: 131072 },
 ];
 
 export function resolveModelAlias(id) {

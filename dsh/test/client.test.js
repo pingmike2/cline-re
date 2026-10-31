@@ -134,7 +134,7 @@ test("model input offers the live free-pool models as a datalist", () => {
 		"reflection/beam-free",
 		"cline-free/solar-mini4",
 	]);
-	assert.equal(options.every((node) => node.props.label.includes("200k")), true);
+	assert.equal(options.every((node) => node.props.label.includes("上下文") && !node.props.label.includes("200k")), true);
 });
 
 test("page falls back to a hint when the host exposes no writable form", () => {

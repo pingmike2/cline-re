@@ -21,11 +21,17 @@ test("retired free models stay out of the alias map and catalog", () => {
 	assert.equal(resolveModelAlias("laguna"), "laguna");
 });
 
-test("catalog entries keep the 200k window and full ids", () => {
+test("catalog entries carry the live gateway metadata", () => {
 	assert.equal(CLINE_MODEL_CATALOG.length, 4);
+	const expected = {
+		"cline-free/nemotron-3.5-super-vl": 1048576,
+		"nvidia/nemotron-3.5-lightning-free": 1000000,
+		"reflection/beam-free": 1048576,
+		"cline-free/solar-mini4": 524288,
+	};
 	for (const model of CLINE_MODEL_CATALOG) {
-		assert.equal(model.contextWindow, 200000);
-		assert.equal(model.maxTokens, 32768);
+		assert.equal(model.contextWindow, expected[model.id]);
+		assert.ok(model.maxTokens >= 65536);
 		assert.match(model.id, /^[a-z0-9-]+\/[a-z0-9.-]+$/);
 	}
 });

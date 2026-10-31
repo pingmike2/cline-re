@@ -25,7 +25,7 @@ translation layer, which is what makes the plugin auditable.
 1. **Model provider** — `cline` shows up in DSH's provider/model lists, so DSH's
    own agent loop can run Cline's free models (default
    `cline-free/nemotron-3.5-super-vl`, alias `nemotron`; also `solar-mini4`,
-   `lightning`, `beam` — all free-pool models share a 200k context window).
+   `lightning`, `beam`; super VL, lightning and beam offer 1M context).
 2. **Delegation tool** — a model can call `cline` to hand a self-contained task
    to the cline-re agent, which brings its own read_files / editor / run_commands
    / search_codebase tools, plan/yolo modes, loop and mistake guardrails.
@@ -110,8 +110,8 @@ After the restart the Plugins page shows `dsh-cline`; clicking it opens Configur
 - The Configure form stores the key in this row's config through the DSH settings
   layer; the input is write-only and never echoed. If you do not want it in the
   profile config, use `cline.json` instead.
-- Model metadata (contextWindow 200k / maxTokens 32k) is a conservative
-  placeholder; the Cline gateway exposes no equivalent field.
+- Model metadata is synced with the live gateway free pool (1M context for
+  nemotron super VL / lightning / beam, 512k for solar mini4).
 - The route is declared text-only (`input: ["text"]`), so DSH replaces images
   with placeholder text.
 - Static API keys are sent as `Authorization: Bearer <key>`; `cline-re login`
@@ -155,7 +155,8 @@ node --test "test/*.test.js" "dsh/test/*.test.js"   # 93 core + 25 plugin
 
 1. **模型供应商**：`cline` 出现在 DSH 的供应商/模型列表里，DSH 自己的 agent 循环
    直接走 Cline 免费模型（默认 `cline-free/nemotron-3.5-super-vl`，别名
-   `nemotron`；还有 `solar-mini4`、`lightning`、`beam`，全部 200k 上下文）。
+   `nemotron`；还有 `solar-mini4`、`lightning`、`beam`，super VL / lightning /
+   beam 支持 1M 上下文）。
 2. **委派工具**：模型可以调用 `cline` 工具，把一段自包含任务交给 cline-re 自己的
    agent（它有自己的 read_files / editor / run_commands / search_codebase、
    plan/yolo 模式、循环与错误护栏）。
@@ -239,8 +240,8 @@ profile 名。
   里的 Configure 表单（或 `cline.json`），不是那个页面。
 - Configure 表单把 key 存进本行配置，由 DSH 设置层落盘；表单是只写输入（不回显）。
   不想让它进 profile 配置就用 `cline.json`。
-- 模型元数据（contextWindow 200k / maxTokens 32k）是保守占位值，Cline 网关没有
-  公开的等价字段。
+- 模型元数据已按 Cline 网关 `/ai/cline/models` 实测同步（nemotron super VL /
+  lightning / beam 为 1M，solar mini4 为 512k）。
 - 路由声明为纯文本（`input: ["text"]`），图片会被 DSH 替换成占位文本。
 - 静态 API key 走 `Authorization: Bearer <key>`；`cline-re login` 的 WorkOS
   token 自带 `workos:` 前缀，两者共用同一条 `OpenAIClient`，与 CLI 行为一致。
