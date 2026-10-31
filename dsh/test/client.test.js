@@ -73,7 +73,6 @@ test("the configure page renders a key field and saves settings operations", asy
 		state: {
 			status: "ready",
 			writable: true,
-			mode: "host",
 			revision: 7,
 			value: { model: "cline-free/nemotron-3.5-super-vl", enableTool: true },
 		},

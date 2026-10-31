@@ -37,7 +37,7 @@ window.__ModuleLoader__.load({
 			const [busy, setBusy] = react.useState(false);
 			const [message, setMessage] = react.useState("");
 			const revision = form?.state?.revision;
-			const ready = form?.state?.status === "ready" && form.state.writable && form.state.mode === "host";
+			const ready = form?.state?.status === "ready" && form.state.writable === true;
 			react.useEffect(() => {
 				if (!dirty) setDraft(snap());
 			}, [form?.state?.revision, form?.state?.status, dirty]);
@@ -86,9 +86,16 @@ window.__ModuleLoader__.load({
 			const { form } = props;
 			const editor = useEditor(form);
 			if (!editor.ready) {
+				const status = form === undefined ? undefined : form?.state?.status;
+				const loading = form !== undefined && (status === "loading" || status === undefined);
+				const note = loading
+					? "正在加载配置…"
+					: "这个 DSH 版本没有为该行提供可写配置表单。直接编辑文件同样有效：";
 				return h("div", null,
-					h("p", { style: NOTE }, "这个 DSH 版本没有为该行提供可写配置表单。直接编辑文件同样有效："),
-					h("code", null, "%DSH_HOME%\\cline.json → {\"apiKey\":\"<your key>\"}"));
+					h("p", { style: NOTE }, note),
+					!loading
+						? h("code", null, "%DSH_HOME%\\cline.json → {\"apiKey\":\"<your key>\"}")
+						: null);
 			}
 			const { draft, edit, busy } = editor;
 			const submit = (event) => {
