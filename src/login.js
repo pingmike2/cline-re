@@ -18,7 +18,7 @@ export async function login({ onPrompt = defaultPrompt, fetchImpl = fetch } = {}
 		refreshToken: data.refreshToken ?? tokens.refreshToken,
 		expiresAt: data.expiresAt,
 		tokenType: data.tokenType ?? "Bearer",
-		userInfo: data.userInfo,
+		userInfo: data.userInfo ?? { email: undefined, id: undefined },
 		createdAt: new Date().toISOString(),
 	};
 	const file = await saveCredentials(creds);

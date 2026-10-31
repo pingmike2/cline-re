@@ -45,6 +45,7 @@ export class CredentialStore {
 			refreshToken: data.refreshToken ?? creds.refreshToken,
 			expiresAt: data.expiresAt,
 			tokenType: data.tokenType ?? "Bearer",
+			userInfo: data.userInfo ? { ...creds.userInfo, ...data.userInfo } : creds.userInfo,
 			updatedAt: new Date(this.now()).toISOString(),
 		};
 		this.cached = next;
