@@ -87,13 +87,16 @@ window.__ModuleLoader__.load({
 			const editor = useEditor(form);
 			if (!editor.ready) {
 				const status = form === undefined ? undefined : form?.state?.status;
-				const loading = form !== undefined && (status === "loading" || status === undefined);
-				const note = loading
+				const note = status === "loading" || (form !== undefined && status === undefined)
 					? "正在加载配置…"
-					: "这个 DSH 版本没有为该行提供可写配置表单。直接编辑文件同样有效：";
+					: status === "unavailable"
+						? "该配置命名空间当前不可用（可能已停载）。稍后重试，或重启 DSH。"
+						: "这个 DSH 版本没有为该行提供可写配置表单。直接编辑文件同样有效：";
+				const showFileHint = form !== undefined && status !== "loading" && status !== "unavailable"
+					|| form === undefined;
 				return h("div", null,
 					h("p", { style: NOTE }, note),
-					!loading
+					showFileHint
 						? h("code", null, "%DSH_HOME%\\cline.json → {\"apiKey\":\"<your key>\"}")
 						: null);
 			}

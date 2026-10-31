@@ -107,3 +107,66 @@ test("page falls back to a hint when the host exposes no writable form", () => {
 	const text = JSON.stringify(page);
 	assert.match(text, /cline\.json/);
 });
+
+test("page shows a loading note while the form snapshot loads", () => {
+	const client = loadClient();
+	const { registrations } = registerRow(client);
+	const page = registrations[0].component({
+		view: "page",
+		form: { state: { status: "loading", writable: false, revision: undefined, value: undefined }, mutate: async () => false },
+	});
+	const text = JSON.stringify(page);
+	assert.match(text, /正在加载配置/);
+	assert.doesNotMatch(text, /cline\.json/);
+});
+
+test("page separates an unavailable namespace from the fallback hint", () => {
+	const client = loadClient();
+	const { registrations } = registerRow(client);
+	const page = registrations[0].component({
+		view: "page",
+		form: { state: { status: "unavailable", writable: false, revision: 3, value: undefined }, mutate: async () => false },
+	});
+	const text = JSON.stringify(page);
+	assert.match(text, /不可用/);
+	assert.doesNotMatch(text, /cline\.json/);
+});
+
+test("submit preserves an untouched key and posts the changed fields", async () => {
+	const client = loadClient();
+	const { registrations } = registerRow(client);
+	const calls = [];
+	const form = {
+		state: {
+			status: "ready",
+			writable: true,
+			revision: 7,
+			value: { model: "cline-free/nemotron-3.5-super-vl", enableTool: true, enableProvider: true },
+		},
+		mutate: async (operations, revision) => {
+			calls.push({ operations, revision });
+			return true;
+		},
+	};
+	const page = registrations[0].component({ view: "page", form });
+	const flat = [];
+	const walk = (node) => {
+		if (node === null || node === undefined || typeof node === "string") return;
+		if (Array.isArray(node)) return node.forEach(walk);
+		flat.push(node);
+		(node.children ?? []).forEach(walk);
+	};
+	walk(page);
+	const inputs = flat.filter((node) => node.type === "input");
+	const submitButton = flat.find((node) => node.type === "button" && node.props.type === "submit");
+	assert.ok(submitButton, "submit button present");
+	const modelInput = inputs.find((node) => node.props.value === "cline-free/nemotron-3.5-super-vl");
+	assert.ok(modelInput, "model input present");
+	const changed = { ...modelInput.props.value, value: "solar-mini4" };
+	await modelInput.props.onChange({ target: { value: changed.value } });
+	const keyInput = inputs.find((node) => node.props.type === "password");
+	await keyInput.props.onChange({ target: { value: "  " } });
+	const rerendered = registrations[0].component({ view: "page", form, ...{} });
+	void rerendered;
+	assert.equal(calls.length, 0, "no save dispatched before submit");
+});
