@@ -1,0 +1,13 @@
+{
+	"name": "zcode-cline",
+	"version": "0.1.0",
+	"description": "Use the cline-re agent (Cline free model pool) inside ZCode: a /cline slash command, a cline skill and a cline subagent that delegate self-contained coding tasks to the cline-re CLI.",
+	"author": {
+		"name": "pingmike2"
+	},
+	"homepage": "https://github.com/pingmike2/cline-re#readme",
+	"license": "MIT",
+	"commands": "./commands",
+	"skills": "./skills",
+	"agents": "./agents"
+}

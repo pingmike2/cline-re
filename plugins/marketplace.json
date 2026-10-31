@@ -1,0 +1,22 @@
+{
+	"name": "dev-cline-re",
+	"owner": {
+		"name": "pingmike2"
+	},
+	"plugins": [
+		{
+			"name": "zcode-cline",
+			"source": "./zcode-cline",
+			"version": "0.1.0",
+			"description": "Use the cline-re agent (Cline free model pool) inside ZCode: /cline command, cline skill and cline subagent that delegate self-contained coding tasks to the cline-re CLI.",
+			"displayName": "zcode-cline",
+			"displayName_i18n": {
+				"zh-CN": "cline 委托"
+			},
+			"description_i18n": {
+				"zh-CN": "在 ZCode 中使用 cline-re 代理（Cline 免费模型池）：/cline 命令、cline 技能与 cline 子代理，把独立的编码任务委托给 cline-re CLI。"
+			},
+			"category": "developer-tools"
+		}
+	]
+}

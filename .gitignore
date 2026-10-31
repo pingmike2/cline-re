@@ -32,3 +32,8 @@ dist/
 # OS
 .DS_Store
 Thumbs.db
+
+# ZCode local plugin-host state (never commit)
+.zcode/
+.zcode-purge/
+

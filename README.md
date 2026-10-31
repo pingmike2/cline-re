@@ -250,6 +250,24 @@ and the key file exist).
 
 ---
 
+## ZCode plugin
+
+`plugins/zcode-cline/` wraps the delegation half of this repo as a **ZCode**
+plugin (the ZCode client does not let plugins register model providers, so the
+provider half from `dsh/` has no equivalent here). It ships three interchangeable
+entry points, all pure markdown + JSON — the only process they ever launch is
+`node src/cli.js`:
+
+- **`/cline <task>`** slash command (supports inline `-m`, `-p`, `-y`, `-c`),
+- a **`cline`** skill that auto-triggers when the user asks to run something "with cline",
+- a **`cline`** subagent the session model can delegate whole tasks to.
+
+Credentials reuse `CLINE_API_KEY` / `cline-re login`; the CLI entry is
+`ZCODE_CLINE_CLI` (default: this checkout). Install is via a local dev
+marketplace — see [plugins/zcode-cline/README.md](plugins/zcode-cline/README.md).
+
+---
+
 ## Tests
 
 ```bash
@@ -540,6 +558,20 @@ API key 在 **DSH → 设置 → 插件 → `dsh-cline` → Configure** 里填�
 （其中一条：DSH 的 Models 设置页不给自定义供应商渲染 key 输入框，所以才有
 Configure 与 key 文件）。
 
+## ZCode 插件
+
+`plugins/zcode-cline/` 把本仓库的"委托"半边包成 **ZCode** 插件（ZCode 客户端
+不允许插件注册模型供应商，所以 `dsh/` 的 provider 半边在这里没有对应物）。共三个
+可互换入口，全部是 markdown + JSON，唯一的外部进程就是 `node src/cli.js`：
+
+- **`/cline <任务>`** 斜杠命令（支持行内 `-m`、`-p`、`-y`、`-c`）；
+- **`cline`** 技能，用户说"用 cline 跑"时自动触发；
+- **`cline`** 子代理，会话模型可把整段任务委托给它。
+
+凭据复用 `CLINE_API_KEY` / `cline-re login`；CLI 入口由 `ZCODE_CLINE_CLI` 指定
+（默认为本仓库）。通过本地开发 marketplace 安装，步骤见
+[plugins/zcode-cline/README.md](plugins/zcode-cline/README.md)。
+
 ## 测试
 
 ```bash
@@ -578,6 +610,7 @@ src/
   login.js            配对交互
   prompt*.js          系统提示词（act / plan / yolo）
 dsh/                  DeepSeek Harness 插件（见 dsh/README.md）
+plugins/              ZCode 插件（见 plugins/zcode-cline/README.md）
 ```
 
 ## 关于加密
